@@ -7,8 +7,11 @@ import Todo from "./components/Todo";
 import DATA from './data';
 import { nanoid } from "nanoid";
 
+const FILTERS = ['all', 'completed', 'incomplete'];
+
 function App() {
 	const [tasks, setTasks] = useState(DATA);
+	const [filter, setFilter] = useState('all');
 
 	function addTask(name) {
 		// Create action
@@ -35,22 +38,42 @@ function App() {
 		setTasks(updatedTasks);
 	}
 
+	const editTask = (id, name, value) => {
+		const updatedTasks = tasks.map((task) => {
+			if (id === task.id) {
+				return {...task, [name]: value};
+			}
+
+			return task;
+		});
+
+		setTasks(updatedTasks);
+	}
+
 	const deleteTask = (id) => {
 		// Delete action
-		console.log('delete', id);
 		const updatedTasks = tasks.filter((task) => id !== task.id);
 
 		setTasks(updatedTasks);
 	}
 	
+	const handleFilters = (filter) => {
+		setFilter(filter);
+
+		switch (filter) {
+			case 'all':
+			default:
+
+		}
+	}
+
 	return (
 		<div className="todoapp stack-large">
 			<h1>Habit Trackr</h1>
 			<Form addTask={addTask} />
 			<div className="filters btn-group stack-exception">
-				<FilterButton />
-				<FilterButton />
-				<FilterButton />
+				{/* Map filters, set filter state to name */}
+				{FILTERS.map((filter) => <FilterButton name={filter} callback={}  />)}
 			</div>
 			<h2 id="list-heading">
 				{tasks.length === 1 ? '1 task' : `${tasks.length} tasks`} remaining
@@ -68,6 +91,7 @@ function App() {
 						id={task.id} 
 						toggleComplete={toggleComplete}
 						delete={deleteTask}
+						edit={editTask}
 					/>
 				))}
 			</ul>
