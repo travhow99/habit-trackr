@@ -7,11 +7,12 @@ import Todo from "./components/Todo";
 import DATA from './data';
 import { nanoid } from "nanoid";
 
-const FILTERS = ['all', 'completed', 'incomplete'];
+const FILTERS = ['all', 'completed', 'active'];
 
 function App() {
 	const [tasks, setTasks] = useState(DATA);
 	const [filter, setFilter] = useState('all');
+	const [filteredTasks, setFilteredTasks] = useState(DATA);
 
 	function addTask(name) {
 		// Create action
@@ -20,8 +21,11 @@ function App() {
 			name,
 			completed: false,
 		};
+
+		const updatedTasks = [...tasks, newTask];
 	
-		setTasks([...tasks, newTask]);
+		setTasks(updatedTasks);
+		handleFilter(filter, updatedTasks);
 	}
 
 	const toggleComplete = (id) => {
@@ -36,6 +40,7 @@ function App() {
 		})
 
 		setTasks(updatedTasks);
+		handleFilter(filter, updatedTasks);
 	}
 
 	const editTask = (id, name, value) => {
@@ -48,6 +53,7 @@ function App() {
 		});
 
 		setTasks(updatedTasks);
+		handleFilter(filter, updatedTasks);
 	}
 
 	const deleteTask = (id) => {
@@ -55,17 +61,34 @@ function App() {
 		const updatedTasks = tasks.filter((task) => id !== task.id);
 
 		setTasks(updatedTasks);
+		handleFilter(filter, updatedTasks);
 	}
 	
-	const handleFilters = (filter) => {
-		setFilter(filter);
+	const handleFilter = (new_filter, updated_tasks=null) => {
+		let filtered;
+		let target_tasks = updated_tasks ?? tasks;
 
-		switch (filter) {
+		switch (new_filter) {
+			case 'completed':
+				filtered = target_tasks.filter((task) => task.completed);
+				break;
+			case 'active':
+				filtered = target_tasks.filter((task) => !task.completed);
+				break;
 			case 'all':
 			default:
-
+				filtered = target_tasks;
+				break;
 		}
+
+		if (filter !== new_filter) {
+			setFilter(new_filter);
+		}
+
+		setFilteredTasks(filtered);
 	}
+
+	console.log('filtered:', filteredTasks);
 
 	return (
 		<div className="todoapp stack-large">
@@ -73,17 +96,16 @@ function App() {
 			<Form addTask={addTask} />
 			<div className="filters btn-group stack-exception">
 				{/* Map filters, set filter state to name */}
-				{FILTERS.map((filter) => <FilterButton name={filter} callback={}  />)}
+				{FILTERS.map((filter, index) => <FilterButton key={index} name={filter} callback={handleFilter} />)}
 			</div>
 			<h2 id="list-heading">
 				{tasks.length === 1 ? '1 task' : `${tasks.length} tasks`} remaining
 			</h2>
 			<ul
-				role="list"
 				className="todo-list stack-large stack-exception"
 				aria-labelledby="list-heading"
 			>
-				{tasks.map((task, index) => (
+				{filteredTasks.map((task, index) => (
 					<Todo 
 						key={index} 
 						name={task.name} 

@@ -15,11 +15,14 @@ const Todo = (props) => {
         setName('');
     }
 
+    console.log('complete?', props.completed);
+
     const viewTemplate = (
         <div className="todo stack-small">
             <div className="c-cb">
                 <input
                     id={props.id}
+                    key={props.id}
                     type="checkbox"
                     defaultChecked={props.completed}
                     onChange={() => props.toggleComplete(props.id)}
