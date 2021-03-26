@@ -15,6 +15,7 @@ const params = {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
+    useFindAndModify: false,
 };
 
 mongoose.connect(uri, params)
@@ -23,6 +24,6 @@ mongoose.connect(uri, params)
 
 app.use(habitRoute);
 
-app.listen(3000, () => {
+app.listen(process.env.PORT, () => {
     console.log("Server is running...");
 });

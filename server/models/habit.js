@@ -7,7 +7,7 @@ const HabitSchema = new mongoose.Schema({
         trim: true,
         lowercase: true,
     },
-    name: {
+    category: {
         type: String,
         required: true,
         trim: true,
