@@ -24,6 +24,8 @@ mongoose.connect(uri, params)
 
 app.use(habitRoute);
 
+app.get('/api/hey', (req, res) => res.send('ho!'))
+
 app.listen(process.env.PORT, () => {
     console.log("Server is running...");
 });

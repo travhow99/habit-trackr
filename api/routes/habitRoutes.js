@@ -2,7 +2,7 @@ const express = require("express");
 const habitModel = require('../models/habit');
 const app = express();
 
-app.get('/habits', async (request, response) => {
+app.get('/api/habits', async (request, response) => {
     const habits = await habitModel.find({});
 
     try {
@@ -12,7 +12,7 @@ app.get('/habits', async (request, response) => {
     }
 });
 
-app.post('/habit', async (request, response) => {
+app.post('/api/habit', async (request, response) => {
     const habit = new habitModel(request.body);
 
     try {
@@ -22,7 +22,8 @@ app.post('/habit', async (request, response) => {
         response.status(500).send(error);
     }
 });
-app.patch('/habit/:id', async (request, response) => {
+
+app.patch('/api/habit/:id', async (request, response) => {
     try {
         const habit = await habitModel.findByIdAndUpdate(request.params.id, request.body);
 
@@ -33,7 +34,7 @@ app.patch('/habit/:id', async (request, response) => {
     }
 });
 
-app.delete('/habit/:id', async (request, response) => {
+app.delete('/api/habit/:id', async (request, response) => {
     try {
         const habit = await habitModel.findByIdAndDelete(request.params.id);
 
